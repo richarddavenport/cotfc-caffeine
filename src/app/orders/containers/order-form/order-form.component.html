@@ -1,0 +1,28 @@
+<form novalidate *ngIf="(config$ | async); let config" [formGroup]="order">
+  <md-radio-group formControlName="temperature">
+    <md-radio-button *ngFor="let temp of config.temperatures | keyValue" [value]="temp.value">
+      {{temp.value}}
+    </md-radio-button>
+  </md-radio-group>
+  <hr>
+  <div formGroupName="flavors" fxLayout="column" fxLayout.gt-xs="row">
+    <div *ngFor="let flavor of config.flavors | keyValue" fxFlex>
+      <label>
+        <md-checkbox class="flavor" [formControlName]="flavor.value">{{flavor.value}}</md-checkbox>
+      </label>
+    </div>
+  </div>
+  <hr>
+  <md-radio-group formControlName="milk" fxLayout="column" fxLayout.gt-xs="row">
+    <md-radio-button *ngFor="let milk of config.milks | keyValue" [value]="milk.value">
+      {{milk.value}}
+    </md-radio-button>
+  </md-radio-group>
+  <hr>
+  <md-input-container class="full-width">
+    <textarea mdInput placeholder="Special Instructions:" formControlName="notes"></textarea>
+  </md-input-container>
+  <md-card-actions>
+    <button md-button (click)="submit()" type="submit" [disabled]="order.invalid">PLACE ORDER</button>
+  </md-card-actions>
+</form>

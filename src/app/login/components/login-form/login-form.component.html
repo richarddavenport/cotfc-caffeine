@@ -1,0 +1,19 @@
+<form>
+  <div class="email-password">
+    <img class="prefix" src="images/email.png">
+    <md-input-container>
+      <input #email mdInput type="text" placeholder="&nbsp;email">
+    </md-input-container>
+  </div>
+  <div class="email-password">
+    <img class="prefix" src="images/password.png">
+    <md-input-container>
+      <input #password mdInput type="password" placeholder="&nbsp;password">
+    </md-input-container>
+  </div>
+  <div class="sign-in">
+    <button (click)="signIn.emit({ email: email.value, password: password.value})" type="submit" md-button>
+      <ng-content></ng-content>
+    </button>
+  </div>
+</form>

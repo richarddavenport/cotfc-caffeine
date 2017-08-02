@@ -1,0 +1,10 @@
+<main>
+  <cc-login-form (signIn)="onSignIn($event)">
+    sign in
+  </cc-login-form>
+  <p class="center">or</p>
+  <cc-social-logins (loginWithProvider)="onLoginWithProvider($event)"></cc-social-logins>
+</main>
+<p class="center">
+  i don't have an account yet. <a routerLink="/login/register" class="create-one">create one</a>
+</p>

@@ -1,0 +1,26 @@
+html,
+body,
+cc-coffee-time,
+md-sidenav-container {
+  min-height: 100vh;
+}
+
+md-checkbox>label {
+  margin: 4px;
+}
+
+.md-checkbox-layout>.flavor {
+  margin: 4px;
+}
+
+cc-login,
+cc-register {
+  .mat-focused .mat-input-placeholder,
+  .mat-input-placeholder {
+    color: white;
+  }
+  .mat-input-ripple,
+  .mat-input-underline {
+    background-color: white;
+  }
+}

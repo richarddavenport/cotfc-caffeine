@@ -1,0 +1,18 @@
+<md-sidenav-container>
+  <md-toolbar *ngIf="(user$ | async)">
+    <i class="material-icons" (click)="sidenav.open()">menu</i>
+    <header class="toolbar-header">COTFC Coffee</header>
+  </md-toolbar>
+  <md-sidenav #sidenav>
+    <header>
+      <img class="avatar" *ngIf="(user$ | async)" [src]="(user$ | async)?.photoURL" alt="">
+    </header>
+    <md-nav-list>
+      <a md-list-item routerLink="/order" (click)="sidenav.close()">Order</a>
+      <a *ngIf="isBarista" md-list-item routerLink="/barista" (click)="sidenav.close()">Barista</a>
+      <a *ngIf="isBarista" md-list-item routerLink="/admin" (click)="sidenav.close()">Admin</a>
+      <a md-list-item (click)="onLogout(); sidenav.close()">Logout</a>
+    </md-nav-list>
+  </md-sidenav>
+  <router-outlet></router-outlet>
+</md-sidenav-container>

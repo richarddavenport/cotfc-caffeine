@@ -1,0 +1,48 @@
+<div class="container" fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-around start" fxLayoutAlign.xs="center center">
+  <md-card>
+    <md-card-title>Flavors</md-card-title>
+    <md-card-content>
+      <md-list>
+        <md-list-item fxFlexlayout>
+          <md-input-container fxFlex>
+            <input md-input #newflavor placeholder="Add New Flavor">
+          </md-input-container>
+          <a md-mini-fab color="primary" (click)="addFlavor(newflavor.value)">
+            <i class="material-icons">add</i>
+          </a>
+        </md-list-item>
+        <md-list-item *ngFor="let flavor of flavors | async; let i=index;trackBy:flavorTrackBy" fxFlexlayout>
+          <md-input-container fxFlex>
+            <input md-input #flavortext [value]="flavor.$value" (keyup)="updateFlavor(flavor.$key, flavortext.value)">
+          </md-input-container>
+          <a md-mini-fab color="warn" (click)="deleteFlavor(flavor.$key)">
+            <i class="material-icons">clear</i>
+          </a>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+  </md-card>
+  <md-card>
+    <md-card-title>Milks</md-card-title>
+    <md-card-content>
+      <md-list>
+        <md-list-item fxFlexlayout>
+          <md-input-container fxFlex>
+            <input md-input #newmilk placeholder="Add New Milk">
+          </md-input-container>
+          <a md-mini-fab color="primary" (click)="addMilk(newmilk.value)">
+            <i class="material-icons">add</i>
+          </a>
+        </md-list-item>
+        <md-list-item *ngFor="let milk of milks | async; let i=index;trackBy:milkTrackBy" fxFlexlayout>
+          <md-input-container fxFlex>
+            <input md-input #milktext [value]="milk.$value" (keyup)="updateMilk(milk.$key, milktext.value)">
+          </md-input-container>
+          <a md-mini-fab color="warn" (click)="deleteMilk(milk.$key)">
+            <i class="material-icons">clear</i>
+          </a>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+  </md-card>
+</div>
