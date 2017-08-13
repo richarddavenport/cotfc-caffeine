@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { NotFoundComponent } from './core/components/not-found/not-found.component';
-import { LoginGuard } from './core/services/login.guard';
-import { OrdersGuard } from './core/services/orders.guard';
+import { LoginGuard } from './core/guards/login.guard';
+import { OrdersGuard } from './core/guards/orders.guard';
 
 const appRoutes: Routes = [
   {

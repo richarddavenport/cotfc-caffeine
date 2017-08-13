@@ -1,3 +1,4 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,6 +36,7 @@ const MdModules = [
     ReactiveFormsModule,
     SharedModule,
     ...MdModules,
+    FlexLayoutModule
   ],
   declarations: [
     OrderFormComponent,

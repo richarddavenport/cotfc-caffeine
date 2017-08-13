@@ -15,24 +15,19 @@ import { AppState } from './app.state';
 })
 export class AppComponent implements OnInit {
   user$: Observable<firebase.User>;
-  isBarista: boolean;
+  isBarista$: Observable<boolean>;
 
   constructor(
-    private authservice: AuthService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
-    this.isBarista = false;
-    this.user$ = this.authservice.authState
-      .map(user => {
-        if (user && user.email === 'barista@cotfc.com') {
-          this.isBarista = true;
-        }
-        return user;
-      });
+    this.user$ = this.authService.authState;
+    this.isBarista$ = this.authService.authState
+      .map(user => (user && user.uid === 'jXgIFpsBfWgJ7HIjGxq3FHvfaBX2'));
   }
 
   onLogout(): void {
-    this.authservice.logout();
+    this.authService.logout();
   }
 }

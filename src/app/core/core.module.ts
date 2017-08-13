@@ -1,3 +1,4 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,9 +16,9 @@ import { RouterModule } from '@angular/router';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { AuthService } from './services/auth.service';
 import { Database } from './services/database';
-import { LoginGuard } from './services/login.guard';
+import { LoginGuard } from './guards/login.guard';
 import { OrderHelper } from './services/order-helper';
-import { OrdersGuard } from './services/orders.guard';
+import { OrdersGuard } from './guards/orders.guard';
 
 const MdModules = [
   MdButtonModule,
