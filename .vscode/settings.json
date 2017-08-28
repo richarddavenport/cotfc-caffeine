@@ -1,3 +1,5 @@
 {
-    "vsicons.presets.angular": true
+    "vsicons.presets.angular": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.implementationsCodeLens.enabled": true
 }

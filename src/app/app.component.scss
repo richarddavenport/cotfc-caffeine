@@ -19,10 +19,10 @@ md-sidenav {
 }
 
 .avatar {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    margin: auto;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  margin: auto;
 }
 
 .toolbar-header {
@@ -33,4 +33,8 @@ md-nav-list {
   >a {
     outline: none;
   }
+}
+
+main {
+  padding-bottom: 5px;
 }

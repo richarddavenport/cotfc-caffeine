@@ -4,7 +4,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 
 import { Database } from '../../../core/services/database';
-import { OrderHelper } from '../../../core/services/order-helper';
 import { Config } from '../../../models/config';
 import { Order } from '../../models/order';
 
@@ -17,13 +16,12 @@ export class OrderFormComponent implements OnInit {
   order: FormGroup;
   config$: Observable<Config>;
   flavors: { [key: string]: boolean };
-  milks: string[];
+  drinks: string[];
   temperatures: string[];
 
   constructor(
     private formBuilder: FormBuilder,
     private database: Database,
-    private orderHelper: OrderHelper,
     private auth: AngularFireAuth
   ) { }
 
@@ -33,11 +31,11 @@ export class OrderFormComponent implements OnInit {
         ...acc,
         [config.flavors[cur]]: false,
       }), {});
-      this.milks = Object.keys(config.milks).map(milk => config.milks[milk]);
+      this.drinks = Object.keys(config.drinks).map(drink => config.drinks[drink]);
       this.temperatures = Object.keys(config.temperatures).map(temp => config.temperatures[temp]);
       this.order = this.formBuilder.group({
         flavors: this.formBuilder.group(this.flavors),
-        milk: '',
+        drink: '',
         notes: '',
         temperature: '',
       });

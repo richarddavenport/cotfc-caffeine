@@ -1,5 +1,5 @@
 export interface Config {
   flavors: any;
-  milks: any;
+  drinks: any;
   temperatures: any;
 }

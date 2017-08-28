@@ -1,3 +1,4 @@
+import { ProfileGuard } from './core/guards/profile.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -9,7 +10,7 @@ const appRoutes: Routes = [
   {
     path: 'order',
     loadChildren: 'app/orders/orders.module#OrdersModule',
-    canActivate: [OrdersGuard]
+    canActivate: [OrdersGuard, ProfileGuard]
   }, {
     path: 'login',
     loadChildren: 'app/login/login.module#LoginModule',
@@ -20,6 +21,9 @@ const appRoutes: Routes = [
   }, {
     path: 'barista',
     loadChildren: 'app/barista/barista.module#BaristaModule',
+  }, {
+    path: 'profile',
+    loadChildren: 'app/profile/profile.module#ProfileModule',
   }, {
     path: '',
     redirectTo: '/order',

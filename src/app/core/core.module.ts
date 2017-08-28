@@ -1,4 +1,3 @@
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,16 +8,17 @@ import {
   MdInputModule,
   MdListModule,
   MdSidenavModule,
+  MdSnackBarModule,
   MdToolbarModule,
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { LoginGuard } from './guards/login.guard';
+import { OrdersGuard } from './guards/orders.guard';
+import { ProfileGuard } from './guards/profile.guard';
 import { AuthService } from './services/auth.service';
 import { Database } from './services/database';
-import { LoginGuard } from './guards/login.guard';
-import { OrderHelper } from './services/order-helper';
-import { OrdersGuard } from './guards/orders.guard';
 
 const MdModules = [
   MdButtonModule,
@@ -27,6 +27,7 @@ const MdModules = [
   MdListModule,
   MdSidenavModule,
   MdToolbarModule,
+  MdSnackBarModule
 ]
 
 @NgModule({
@@ -46,7 +47,7 @@ const MdModules = [
     Database,
     LoginGuard,
     OrdersGuard,
-    OrderHelper,
+    ProfileGuard
   ],
   exports: [
     ...MdModules,

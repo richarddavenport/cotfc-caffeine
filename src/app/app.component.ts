@@ -1,12 +1,12 @@
-import { AuthService } from './core/services/auth.service';
-import { Component, OnInit } from '@angular/core';
 import { go } from '@ngrx/router-store';
+import { Component, OnInit } from '@angular/core';
+import { MdSnackBar } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 
 import { AppState } from './app.state';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'cc-app',
@@ -15,16 +15,21 @@ import { AppState } from './app.state';
 })
 export class AppComponent implements OnInit {
   user$: Observable<firebase.User>;
-  isBarista$: Observable<boolean>;
+  barista$: Observable<boolean>;
+  admin$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
+    private store: Store<AppState>,
+    private snackBar: MdSnackBar,
   ) { }
 
   ngOnInit() {
     this.user$ = this.authService.authState;
-    this.isBarista$ = this.authService.authState
-      .map(user => (user && user.uid === 'jXgIFpsBfWgJ7HIjGxq3FHvfaBX2'));
+    this.barista$ = this.authService.getRoles()
+      .map(roles => roles.includes('barista'));
+    this.admin$ = this.authService.getRoles()
+      .map(roles => roles.includes('admin'));
   }
 
   onLogout(): void {

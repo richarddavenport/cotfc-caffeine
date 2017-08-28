@@ -15,9 +15,9 @@
         </div>
       </div>
       <hr>
-      <md-radio-group formControlName="milk" fxLayout="column" fxLayout.gt-xs="row">
-        <md-radio-button *ngFor="let milk of config.milks | keyValue" [value]="milk.value">
-          {{milk.value}}
+      <md-radio-group formControlName="drink" fxLayout="column" fxLayout.gt-xs="row">
+        <md-radio-button *ngFor="let drink of config.drinks | keyValue" [value]="drink.value">
+          {{drink.value}}
         </md-radio-button>
       </md-radio-group>
       <hr>

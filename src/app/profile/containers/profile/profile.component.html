@@ -1,0 +1,11 @@
+<div class="wrapper">
+  <div class="avatar" [style.background-image]="avatar$ | async"></div>
+</div>
+<div class="profile" *ngIf="(profile$ | async) as profile">
+  <h2>{{profile.displayName}}</h2>
+  <div *ngIf="profile.phoneNumber; else noPhone">{{profile.phoneNumber}}</div>
+  <ng-template #noPhone>
+    <cc-profile-form [form]="profileForm$ | async"></cc-profile-form>
+  </ng-template>
+  <button md-raised-button>Save</button>
+</div>

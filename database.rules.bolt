@@ -1,0 +1,40 @@
+// Equivalent to the default (most-permissive) Firebase rule.
+path /config is Config;
+path /users/{uid} is User;
+path /orders/{uid} is Order;
+
+type Config {
+  read() { isAuthenticated() }
+}
+
+type User {
+  read() { isCurrentUser(key()) }
+  updateProfile: Boolean;
+  orders: Order[];
+  profile: Profile;
+  roles: Object;
+}
+
+type Order {
+  write() { isCurrentUser(key()) }
+  // validate() { false } // this might break validating children
+  flavors: Object;
+  drink: String;
+  temperature: Temperature;
+}
+
+type Profile {
+  // validate() { false } // this might break validating children
+  phoneNumber: PhoneNumber;
+}
+
+type PhoneNumber extends String {
+  write() { isCurrentUser(uid) }
+}
+
+type Temperature extends String {
+  validate() { this == 'Hot' || this == 'Iced' }
+}
+
+isAuthenticated() { auth != null }
+isCurrentUser(uid) { auth != null && auth.uid == uid }
