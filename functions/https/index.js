@@ -1,0 +1,80 @@
+'use strict';
+
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp(functions.config().firebase, '[HTTPS_FUNCTIONS]');
+
+const express = require('express');
+const cors = require('cors')({
+  origin: true
+});
+const app = express();
+
+const authenticate = (req, res, next) => {
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+    res.status(403).send('Unauthorized');
+    return;
+  }
+  const idToken = req.headers.authorization.split('Bearer ')[1];
+  admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
+    req.user = decodedIdToken;
+    next();
+  }).catch(error => {
+    res.status(403).send('Unauthorized');
+  });
+};
+
+app.use(cors);
+app.use(authenticate);
+
+app.post('/importoldorders', (req, res) => {
+  const usersImportedOrdersRef = admin.database().ref(`/users/${req.user.uid}/importedOrders`);
+
+  admin.database().ref(`/users/${req.user.uid}/profile/phoneNumber`).once('value').then(snapshot => {
+    const phoneNumber = snapshot.val();
+    const oldOrdersRef = admin.database().ref('/finished').orderByChild('phone').equalTo(phoneNumber);
+
+    oldOrdersRef.once('value').then(snap => {
+      const snapVal = snap.val();
+      if (snapVal == null) {
+        res.status(200).json({
+          phoneNumber,
+          ordersToImport: null,
+          num: 0
+        })
+        return;
+      }
+      const ordersToImport = Object.keys(snapVal).reduce((acc, key) => {
+        const order = snapVal[key];
+        acc[key] = {
+          flavors: order.flavors ? order.flavors : ['None'],
+          drink: order.milk,
+          temperature: order.temp
+        };
+        return acc;
+      }, {});
+
+      // usersOrdersRef.once('value').then(snapshot => {
+      // const currentOrders = snapshot.val();
+      // const orders = Object.assign({}, currentOrders, oldOrders);
+
+      usersImportedOrdersRef.set(ordersToImport).then(() => {
+        res.status(200).json({
+          phoneNumber,
+          ordersToImport,
+          num: Object.keys(ordersToImport).length
+        });
+      });
+      // });
+    });
+
+  });
+});
+
+// TODO: Admins can add baristas and admins
+
+app.use(function (req, res, next) {
+  res.status(404).send(`Sorry can't find that!`);
+});
+
+exports.api = functions.https.onRequest(app);

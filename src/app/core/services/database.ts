@@ -1,3 +1,6 @@
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
@@ -13,11 +16,41 @@ export class Database {
 
   constructor(
     private db: AngularFireDatabase,
+    private angularFireAuth: AngularFireAuth,
   ) { }
 
   get orderConfig(): FirebaseObjectObservable<Config> {
     return this.db.object('/config');
   }
+
+  getUserOrders() {
+    return this.angularFireAuth.authState
+      .map(user => user.uid)
+      .switchMap(uid => combineLatest(this.db.object(`users/${uid}/orders`), (this.db.object(`users/${uid}/importedOrders`))))
+      .filter(([orders, importedOrders]) => orders != null || importedOrders != null)
+      .map(([orders, importedOrders]: [object, object]) => {
+        const allOrders = Object.assign({}, orders, importedOrders);
+        return Object.keys(allOrders).reduce((acc, key) => {
+          const order = allOrders[key];
+          if (order == null) {
+            return acc;
+          }
+          acc.push({
+            icon: (order.temperature == 'Hot') ? 'flaticon-coffee' : 'flaticon-iced-coffee',
+            drink: (order.flavors[0] == 'None') ?
+              `${order.temperature} ${order.drink}` :
+              `${order.temperature} ${order.flavors.join(', ')} ${order.drink}`
+          })
+          return acc;
+        }, [])
+      });
+  }
+
+
+
+
+
+
 
   get ordered(): Observable<Order[]> {
     return this.db.list('/ordered')
@@ -31,9 +64,8 @@ export class Database {
     };
     return of(this.db.database.ref().update(newOrderData));
   }
-  private removeOrder(order: Order): Observable<any> {
-    // TODO: forkJoin should be fromPromise, but TS aint happy right now. this is a hack
-    return Observable.forkJoin(this.db.object('/ordered/' + order.key).remove());
+  private removeOrder(order: Order): Observable<void> {
+    return fromPromise(this.db.object('/ordered/' + order.key).remove());
   }
 
   get started(): Observable<Order[]> {
@@ -53,9 +85,8 @@ export class Database {
       this.removeOrder(order),
       this.db.object('/started/' + order.key).set(order));
   }
-  private removeStarted(order: Order): Observable<any> {
-    // TODO: forkJoin should be fromPromise, but TS aint happy right now. this is a hack
-    return Observable.forkJoin(this.db.object('/started/' + order.key).remove());
+  private removeStarted(order: Order): Observable<void> {
+    return fromPromise(this.db.object('/started/' + order.key).remove());
   }
 
   private addSms(ref: string, to: string, body: string): firebase.Promise<any> {

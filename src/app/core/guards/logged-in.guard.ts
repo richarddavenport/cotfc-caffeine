@@ -10,7 +10,7 @@ import { AppState } from '../../app.state';
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
-export class OrdersGuard implements CanActivate {
+export class LoggedInGuard implements CanActivate {
 
   constructor(
     private authService: AuthService,

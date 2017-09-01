@@ -1,12 +1,11 @@
-import { go } from '@ngrx/router-store';
 import { Component, OnInit } from '@angular/core';
-import { MdSnackBar } from '@angular/material';
 import { Store } from '@ngrx/store';
-import * as firebase from 'firebase/app';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 
 import { AppState } from './app.state';
 import { AuthService } from './core/services/auth.service';
+import { UserProfile } from './models/user';
 
 @Component({
   selector: 'cc-app',
@@ -14,25 +13,27 @@ import { AuthService } from './core/services/auth.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  user$: Observable<firebase.User>;
+  loggedIn$: Observable<boolean>;
+  userProfile$: Observable<UserProfile>;
   barista$: Observable<boolean>;
   admin$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
     private store: Store<AppState>,
-    private snackBar: MdSnackBar,
+    private angularFireDatabase: AngularFireDatabase,
   ) { }
 
   ngOnInit() {
-    this.user$ = this.authService.authState;
-    this.barista$ = this.authService.getRoles()
-      .map(roles => roles.includes('barista'));
-    this.admin$ = this.authService.getRoles()
-      .map(roles => roles.includes('admin'));
-  }
+    this.loggedIn$ = this.authService.authState.map(user => !!user);
+    this.userProfile$ = this.authService.getProfile();
 
-  onLogout(): void {
-    this.authService.logout();
+    this.barista$ = this.authService.getRoles()
+      .filter(roles => Array.isArray(roles))
+      .map(roles => roles.includes('barista'));
+
+    this.admin$ = this.authService.getRoles()
+      .filter(roles => Array.isArray(roles))
+      .map(roles => roles.includes('admin'));
   }
 }

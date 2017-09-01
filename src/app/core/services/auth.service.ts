@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { go } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { AFUnwrappedDataSnapshot } from 'angularfire2/database/interfaces';
-import { UserRecord } from 'firebase-functions/lib/providers/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../app.state';
+import { UserProfile } from '../../models/user';
 
 @Injectable()
 export class AuthService {
@@ -22,22 +23,34 @@ export class AuthService {
     return this.angularFireAuth.authState;
   }
 
-  getNeedToUpdateProfile(uid: string): FirebaseObjectObservable<AFUnwrappedDataSnapshot> {
-    return this.angularFireDatabase.object(`users/${uid}/update-profile`);
-  }
-
-  getProfile(): Observable<admin.auth.UserRecord> {
+  getNeedToUpdateProfile(): Observable<AFUnwrappedDataSnapshot> {
     return this.authState
       .filter(user => !!user)
       .map(user => user.uid)
-      .switchMap(uid => this.angularFireDatabase.object(`users/${uid}/profile`));
+      .switchMap(uid =>
+        this.angularFireDatabase.object(`users/${uid}/profile/updateProfile`)
+          .catch(err => of(console.log(err)))
+      );
+  }
+
+  getProfile(): Observable<UserProfile> {
+    return this.authState
+      .filter(user => !!user)
+      .map(user => user.uid)
+      .switchMap(uid =>
+        this.angularFireDatabase.object(`users/${uid}/profile`)
+          .catch(err => of(console.log(err)))
+      );
   }
 
   getRoles() {
     return this.authState
       .filter(user => !!user)
       .map(user => user.uid)
-      .switchMap(uid => this.angularFireDatabase.object(`users/${uid}/roles`));
+      .switchMap(uid =>
+        this.angularFireDatabase.object(`users/${uid}/roles`)
+          .catch(err => of(console.log(err)))
+      );
   }
 
   loginWithProvider(provider: firebase.auth.AuthProvider): void {
@@ -63,5 +76,11 @@ export class AuthService {
     this.angularFireAuth.auth
       .signOut()
       .then(() => this.store.dispatch(go('login')));
+  }
+
+  updatePhoneNumber(phoneNumber: string) {
+    return this.angularFireAuth.authState
+      .map(user => user.uid)
+      .switchMap(uid => this.angularFireDatabase.object(`users/${uid}/profile`).update({ phoneNumber }))
   }
 }

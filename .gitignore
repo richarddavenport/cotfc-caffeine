@@ -42,7 +42,6 @@ testem.log
 Thumbs.db
 
 # Firebase
-database.json
-database.rules.json
 firebase.config.ts
 firebase.json
+serviceAccountKey*

@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "start:functions": "npm run firebase -- serve --only functions",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -16,6 +17,7 @@
     "deploy:dev": "npm run build:dev && firebase deploy",
     "deploy:prod": "npm run build:prod && firebase deploy",
     "deploy:functions": "firebase deploy --only functions",
+    "deploy:database": "firebase deploy --only database",
     "hmr": "npm run start -- --hmr -e=hmr"
   },
   "private": true,
@@ -40,6 +42,7 @@
     "@ngrx/effects": "2.0.4",
     "@ngrx/router-store": "1.2.6",
     "@ngrx/store": "2.2.3",
+    "angular2-text-mask": "^8.0.3",
     "angularfire2": "^4.0.0-rc.2",
     "core-js": "^2.4.1",
     "firebase": "^4.3.0",

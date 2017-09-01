@@ -4,11 +4,15 @@ admin.initializeApp(functions.config().firebase);
 
 exports.userCreated = functions.auth.user().onCreate(event => {
   const uid = event.data.uid;
+  const profile = Object.assign({}, {
+    phoneNumber: '',
+    updateProfile: true,
+    receiveTexts: true,
+  }, event.data);
   const userCreated = {
-    [`users/${uid}/profile`]: event.data,
+    [`users/${uid}/profile`]: profile,
     [`users/${uid}/roles`]: ['user'],
-    [`users/${uid}/update-profile`]: true,
     [`roles/user/${uid}`]: true
-  }
+  };
   admin.database().ref().update(userCreated);
 });

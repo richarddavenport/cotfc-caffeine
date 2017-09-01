@@ -1,4 +1,3 @@
-// Equivalent to the default (most-permissive) Firebase rule.
 path /config is Config;
 path /users/{uid} is User;
 path /orders/{uid} is Order;
@@ -9,10 +8,10 @@ type Config {
 
 type User {
   read() { isCurrentUser(key()) }
-  updateProfile: Boolean;
+  importedOrders: Order[];
   orders: Order[];
   profile: Profile;
-  roles: Object;
+  roles: UserRoles;
 }
 
 type Order {
@@ -26,6 +25,11 @@ type Order {
 type Profile {
   // validate() { false } // this might break validating children
   phoneNumber: PhoneNumber;
+  updateProfile: Boolean;
+}
+
+type UserRoles {
+  read() { isCurrentUser(uid) }
 }
 
 type PhoneNumber extends String {

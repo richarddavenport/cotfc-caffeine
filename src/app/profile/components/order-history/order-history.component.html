@@ -1,0 +1,11 @@
+<md-card>
+  <md-card-title>Order History</md-card-title>
+  <md-card-content>
+    <md-list>
+      <md-list-item *ngFor="let order of orders">
+        <md-icon mdListIcon class="{{ order.icon }}"></md-icon>
+        <p mdLine>{{ order.drink }}</p>
+      </md-list-item>
+    </md-list>
+  </md-card-content>
+</md-card>

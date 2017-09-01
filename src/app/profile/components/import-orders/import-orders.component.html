@@ -1,0 +1,10 @@
+<md-card>
+  <md-card-title>Import Old Orders</md-card-title>
+  <div class="spinner" *ngIf="importing">
+    <md-spinner></md-spinner>
+  </div>
+  <md-card-subtitle>Would you like to import your previous order?</md-card-subtitle>
+  <md-card-actions>
+    <button md-button (click)="importOldOrders.emit()">Import</button>
+  </md-card-actions>
+</md-card>

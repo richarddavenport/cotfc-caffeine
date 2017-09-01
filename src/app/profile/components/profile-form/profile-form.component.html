@@ -1,5 +1,24 @@
 <form *ngIf="form" class="form" [formGroup]="form">
-  <md-input-container>
-    <input formControlName="phone" mdInput placeholder="Phone number">
-  </md-input-container>
+  <md-card>
+    <md-card-title>Profile Info</md-card-title>
+    <md-card-subtitle>
+      If we're missing you're phone number we won't be able to text you.
+    </md-card-subtitle>
+    <md-card-content>
+      <section>
+        <md-input-container>
+          <input formControlName="phone" mdInput placeholder="Phone number" type="tel" [textMask]="{mask: mask}">
+          <md-error *ngIf="form.controls['phone'].hasError('pattern')">
+            Please enter a valid phone number
+          </md-error>
+          <md-error *ngIf="form.controls['phone'].hasError('required')">
+            Please enter a phone number
+          </md-error>
+        </md-input-container>
+      </section>
+    </md-card-content>
+    <md-card-actions>
+      <button md-button (click)="updateForm.emit(form.value)" [disabled]="form.controls['phone'].invalid">Save</button>
+    </md-card-actions>
+  </md-card>
 </form>

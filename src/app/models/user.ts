@@ -1,3 +1,7 @@
-export interface User {
-  name: string;
+import * as admin from 'firebase-admin';
+
+export interface UserProfile extends admin.auth.UserRecord {
+  updateProfile: boolean;
+  editMode: boolean;
+  receiveTexts: boolean;
 }

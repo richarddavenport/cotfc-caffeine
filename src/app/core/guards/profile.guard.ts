@@ -16,9 +16,7 @@ export class ProfileGuard implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.authService.authState
-      .filter(user => !!user)
-      .switchMap(user => this.authService.getNeedToUpdateProfile(user.uid))
+    return this.authService.getNeedToUpdateProfile()
       .map(updateProfile => {
         if (updateProfile.$value) {
           this.store.dispatch(go('/profile'));

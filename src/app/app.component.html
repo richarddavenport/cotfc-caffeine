@@ -1,21 +1,19 @@
 <md-sidenav-container>
-  <md-toolbar *ngIf="(user$ | async)">
+  <md-toolbar *ngIf="(loggedIn$ | async)">
     <i class="material-icons" (click)="sidenav.open()">menu</i>
     <header class="toolbar-header">COTFC Coffee</header>
   </md-toolbar>
   <md-sidenav #sidenav>
     <header>
-      <img class="avatar" *ngIf="(user$ | async)" [src]="(user$ | async)?.photoURL" alt="">
+      <img class="avatar" *ngIf="(userProfile$ | async)" [src]="(userProfile$ | async)?.photoURL">
     </header>
     <md-nav-list>
       <a md-list-item routerLink="/order" (click)="sidenav.close()">Order</a>
-      <a *ngIf="barista$ | async" md-list-item routerLink="/barista" (click)="sidenav.close()">Barista</a>
-      <a *ngIf="admin$ | async" md-list-item routerLink="/admin" (click)="sidenav.close()">Admin</a>
+      <a *ngIf="(barista$ | async)" md-list-item routerLink="/barista" (click)="sidenav.close()">Barista</a>
+      <a *ngIf="(admin$ | async)" md-list-item routerLink="/admin" (click)="sidenav.close()">Admin</a>
       <a md-list-item routerLink="/profile" (click)="sidenav.close()">Profile</a>
-      <a md-list-item (click)="onLogout(); sidenav.close()">Logout</a>
+      <a md-list-item routerLink="/logout" (click)="sidenav.close()">Logout</a>
     </md-nav-list>
   </md-sidenav>
-  <main>
-    <router-outlet></router-outlet>
-  </main>
+  <router-outlet></router-outlet>
 </md-sidenav-container>
