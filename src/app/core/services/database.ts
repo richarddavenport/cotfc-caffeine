@@ -1,3 +1,4 @@
+import { AuthService } from './auth.service';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
 import { fromPromise } from 'rxjs/observable/fromPromise';
@@ -16,7 +17,7 @@ export class Database {
 
   constructor(
     private db: AngularFireDatabase,
-    private angularFireAuth: AngularFireAuth,
+    private authService: AuthService,
   ) { }
 
   get orderConfig(): FirebaseObjectObservable<Config> {
@@ -24,10 +25,9 @@ export class Database {
   }
 
   getUserOrders() {
-    return this.angularFireAuth.authState
+    return this.authService.authState
       .map(user => user.uid)
       .switchMap(uid => combineLatest(this.db.object(`users/${uid}/orders`), (this.db.object(`users/${uid}/importedOrders`))))
-      .filter(([orders, importedOrders]) => orders != null || importedOrders != null)
       .map(([orders, importedOrders]: [object, object]) => {
         const allOrders = Object.assign({}, orders, importedOrders);
         return Object.keys(allOrders).reduce((acc, key) => {
@@ -36,11 +36,11 @@ export class Database {
             return acc;
           }
           acc.push({
-            icon: (order.temperature == 'Hot') ? 'flaticon-coffee' : 'flaticon-iced-coffee',
-            drink: (order.flavors[0] == 'None') ?
-              `${order.temperature} ${order.drink}` :
-              `${order.temperature} ${order.flavors.join(', ')} ${order.drink}`
-          })
+            icon: (order.temperature === 'Hot') ? 'flaticon-coffee' : 'flaticon-iced-coffee',
+            drink: (Array.isArray(order.flavors)) ?
+              `${order.temperature} ${order.flavors.join(', ')} ${order.drink}` :
+              `${order.temperature} ${order.drink}`
+          });
           return acc;
         }, [])
       });
@@ -56,13 +56,15 @@ export class Database {
     return this.db.list('/ordered')
       .map(val => val.map(order => ({ ...order, $key: order.$key })));
   }
-  createOrder(uid: string, order: Order): Observable<firebase.Promise<any>> {
+  createOrder(order: Order): Observable<firebase.Promise<any>> {
     const ref = this.db.database.ref().push();
-    const newOrderData = {
-      [`/orders/${uid}/${ref.key}`]: order,
-      [`/users/${uid}/orders/${ref.key}`]: order
-    };
-    return of(this.db.database.ref().update(newOrderData));
+    return this.authService.getProfile()
+      .map(profile => ({
+        [`/orders/${ref.key}/${profile.uid}/order`]: order,
+        [`/orders/${ref.key}/${profile.uid}/profile`]: profile,
+        [`/users/${profile.uid}/orders/${ref.key}`]: order
+      }))
+      .switchMap(orderData => this.db.database.ref().update(orderData));
   }
   private removeOrder(order: Order): Observable<void> {
     return fromPromise(this.db.object('/ordered/' + order.key).remove());

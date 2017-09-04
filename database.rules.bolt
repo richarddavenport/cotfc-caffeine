@@ -1,31 +1,37 @@
-path /config is Config;
-path /users/{uid} is User;
-path /orders/{uid} is Order;
-
-type Config {
+path /config {
   read() { isAuthenticated() }
 }
 
-type User {
-  read() { isCurrentUser(key()) }
-  importedOrders: Order[];
-  orders: Order[];
-  profile: Profile;
-  roles: UserRoles;
+// Users
+path /users/{uid} {
+  /profile is Profile;
+  /profile/phoneNumber is PhoneNumber;
+  /profile/updateProfile is UpdateProfile;
+  /roles is UserRoles;
+  /importedOrders is Orders;
+  /orders is Orders;
+}
+
+// Orders
+path /orders/{orderId}/{uid} {
+  write() { isCurrentUser(uid) }
+  /order is Order;
+  /profile is Profile;
+}
+
+type Orders extends Order[] {
+  read() { isCurrentUser(uid) }
+  write() { isCurrentUser(uid) }
 }
 
 type Order {
-  write() { isCurrentUser(key()) }
-  // validate() { false } // this might break validating children
-  flavors: Object;
-  drink: String;
-  temperature: Temperature;
+  // TODO: figure out why $other validate false prevents multipath updates
+  // drink: String;
+  // temperature: Temperature;
 }
 
 type Profile {
-  // validate() { false } // this might break validating children
-  phoneNumber: PhoneNumber;
-  updateProfile: Boolean;
+  read() { isCurrentUser(uid) }
 }
 
 type UserRoles {
@@ -33,6 +39,10 @@ type UserRoles {
 }
 
 type PhoneNumber extends String {
+  write() { isCurrentUser(uid) }
+}
+
+type UpdateProfile extends Boolean {
   write() { isCurrentUser(uid) }
 }
 

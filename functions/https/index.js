@@ -2,13 +2,12 @@
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase, '[HTTPS_FUNCTIONS]');
-
 const express = require('express');
 const cors = require('cors')({
   origin: true
 });
 const app = express();
+admin.initializeApp(functions.config().firebase, '[HTTPS_FUNCTIONS]');
 
 const authenticate = (req, res, next) => {
   if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
@@ -47,16 +46,14 @@ app.post('/importoldorders', (req, res) => {
       const ordersToImport = Object.keys(snapVal).reduce((acc, key) => {
         const order = snapVal[key];
         acc[key] = {
-          flavors: order.flavors ? order.flavors : ['None'],
           drink: order.milk,
           temperature: order.temp
         };
+        if (order.flavors) {
+          acc[key].flavors = order.flavors;
+        }
         return acc;
       }, {});
-
-      // usersOrdersRef.once('value').then(snapshot => {
-      // const currentOrders = snapshot.val();
-      // const orders = Object.assign({}, currentOrders, oldOrders);
 
       usersImportedOrdersRef.set(ordersToImport).then(() => {
         res.status(200).json({
@@ -65,9 +62,7 @@ app.post('/importoldorders', (req, res) => {
           num: Object.keys(ordersToImport).length
         });
       });
-      // });
     });
-
   });
 });
 

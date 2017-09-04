@@ -18,12 +18,12 @@ export class ProfileGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.authService.getNeedToUpdateProfile()
       .map(updateProfile => {
-        if (updateProfile.$value) {
+        if (updateProfile.$value === true || updateProfile.$value === null) {
           this.store.dispatch(go('/profile'));
           return false;
         } else {
           return true
         }
-      })
+      });
   }
 }

@@ -45,4 +45,4 @@ Thumbs.db
 firebase.config.ts
 firebase.json
 serviceAccountKey*
-firebase-debug
+firebase-debug*

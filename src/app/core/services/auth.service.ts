@@ -81,6 +81,9 @@ export class AuthService {
   updatePhoneNumber(phoneNumber: string) {
     return this.angularFireAuth.authState
       .map(user => user.uid)
-      .switchMap(uid => this.angularFireDatabase.object(`users/${uid}/profile`).update({ phoneNumber }))
+      .switchMap(uid => this.angularFireDatabase.database.ref().update({
+        [`users/${uid}/profile/phoneNumber`]: phoneNumber,
+        [`users/${uid}/profile/updateProfile`]: false
+      }));
   }
 }

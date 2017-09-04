@@ -57,7 +57,11 @@ export class OrderFormComponent implements OnInit {
         }
       }, [] as string[])
     };
-    this.auth.authState.first().subscribe(user => this.database.createOrder(user.uid, order));
+    this.database.createOrder(order).subscribe(foo => {
+      console.log(foo);
+    }, error => {
+      console.log(error);
+    })
     this.order.reset();
   }
 }

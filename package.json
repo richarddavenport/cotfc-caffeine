@@ -16,8 +16,11 @@
     "build:prod": "ng build -e prod --output-hashing bundles",
     "deploy:dev": "npm run build:dev && firebase deploy",
     "deploy:prod": "npm run build:prod && firebase deploy",
-    "deploy:functions": "firebase deploy --only functions",
+    "functions:preview": "firebase-bolt -- < database.rules.bolt",
     "deploy:database": "firebase deploy --only database",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:storage": "firebase deploy --only storage",
     "hmr": "npm run start -- --hmr -e=hmr"
   },
   "private": true,
