@@ -16,10 +16,12 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ProfileComponent implements OnInit {
   importing: boolean;
   orders$: Observable<any>;
+  importedOrders$: Observable<any>;
   hasPhoneNumber$: Observable<boolean>;
   profileForm$: Observable<FormGroup>;
   profile$: Observable<admin.auth.UserRecord>;
   avatar$: Observable<string>;
+
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
@@ -46,6 +48,7 @@ export class ProfileComponent implements OnInit {
       .map(profile => /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/g.test(profile.phoneNumber));
 
     this.orders$ = this.database.getUserOrders();
+    this.importedOrders$ = this.database.getUserImportedOrders();
   }
 
   onUpdateForm({ phone }) {

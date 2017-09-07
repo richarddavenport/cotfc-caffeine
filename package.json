@@ -52,6 +52,7 @@
     "firebase-admin": "^5.2.1",
     "firebase-functions": "^0.6.2",
     "lodash": "4.17.4",
+    "moment": "^2.18.1",
     "normalize.css": "7.0.0",
     "rxjs": "5.4.2",
     "zone.js": "0.8.16"

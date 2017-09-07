@@ -1,14 +1,18 @@
-import { BaristaRoutingModule } from './barista.routing.module';
-import { CoreModule } from '../core/core.module';
-import { BaristaComponent } from './barista.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MdButtonModule, MdCardModule } from '@angular/material';
+
+import { BaristaComponent } from './barista.component';
+import { BaristaRoutingModule } from './barista.routing.module';
 
 @NgModule({
   imports: [
     BaristaRoutingModule,
     CommonModule,
-    CoreModule,
+    MdCardModule,
+    FlexLayoutModule,
+    MdButtonModule,
   ],
   declarations: [BaristaComponent],
 })

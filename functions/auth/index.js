@@ -12,7 +12,10 @@ exports.userCreated = functions.auth.user().onCreate(event => {
   const userCreated = {
     [`users/${uid}/profile`]: profile,
     [`users/${uid}/roles`]: ['user'],
-    [`roles/user/${uid}`]: true
+    [`roles/user/${uid}`]: {
+      displayName: profile.displayName,
+      photoURL: profile.photoURL
+    }
   };
   admin.database().ref().update(userCreated);
 });

@@ -8,6 +8,7 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import * as moment from 'moment';
 
 import { Config } from '../../models/config';
 import { Order } from '../../orders/models/order';
@@ -20,18 +21,47 @@ export class Database {
     private authService: AuthService,
   ) { }
 
-  get orderConfig(): FirebaseObjectObservable<Config> {
+  get config(): FirebaseObjectObservable<Config> {
     return this.db.object('/config');
+  }
+
+  get baristas(): FirebaseObjectObservable<any> {
+    return this.db.object('/roles/barista');
+  }
+
+  get users(): FirebaseObjectObservable<any> {
+    return this.db.object('/roles/user');
   }
 
   getUserOrders() {
     return this.authService.authState
       .map(user => user.uid)
-      .switchMap(uid => combineLatest(this.db.object(`users/${uid}/orders`), (this.db.object(`users/${uid}/importedOrders`))))
-      .map(([orders, importedOrders]: [object, object]) => {
-        const allOrders = Object.assign({}, orders, importedOrders);
-        return Object.keys(allOrders).reduce((acc, key) => {
-          const order = allOrders[key];
+      .switchMap(uid => this.db.object(`users/${uid}/orders`))
+      .map((orders: Order[]) => {
+        return Object.keys(orders).reduce((acc, key) => {
+          const order: Order = orders[key];
+          if (order == null) {
+            return acc;
+          }
+          acc.push({
+            createdAt: moment(order.createdAt).format('ll'),
+            icon: (order.temperature === 'Hot') ? 'flaticon-coffee' : 'flaticon-iced-coffee',
+            drink: (Array.isArray(order.flavors)) ?
+              `${order.temperature} ${order.flavors.join(', ')} ${order.drink}` :
+              `${order.temperature} ${order.drink}`
+          });
+          return acc;
+        }, [])
+      });
+  }
+
+  getUserImportedOrders() {
+    return this.authService.authState
+      .map(user => user.uid)
+      .switchMap(uid => this.db.object(`users/${uid}/importedOrders`))
+      .map(orders => {
+        return Object.keys(orders).reduce((acc, key) => {
+          const order = orders[key];
           if (order == null) {
             return acc;
           }
@@ -46,52 +76,86 @@ export class Database {
       });
   }
 
-
-
-
-
-
-
-  get ordered(): Observable<Order[]> {
-    return this.db.list('/ordered')
-      .map(val => val.map(order => ({ ...order, $key: order.$key })));
-  }
-  createOrder(order: Order): Observable<firebase.Promise<any>> {
+  createOrder(orderForm: Order): Observable<firebase.Promise<any>> {
     const ref = this.db.database.ref().push();
     return this.authService.getProfile()
-      .map(profile => ({
-        [`/orders/${ref.key}/${profile.uid}/order`]: order,
-        [`/orders/${ref.key}/${profile.uid}/profile`]: profile,
-        [`/users/${profile.uid}/orders/${ref.key}`]: order
+      .map(profile => Object.assign({}, orderForm, {
+        displayName: profile.displayName,
+        photoURL: profile.photoURL,
+        phoneNumber: profile.phoneNumber,
+        uid: profile.uid,
+        status: 'ordered',
+        key: ref.key,
+      }))
+      .map(order => ({
+        [`/orders/${order.key}`]: order,
+        [`/users/${order.uid}/orders/${order.key}`]: order
       }))
       .switchMap(orderData => this.db.database.ref().update(orderData));
   }
-  private removeOrder(order: Order): Observable<void> {
-    return fromPromise(this.db.object('/ordered/' + order.key).remove());
+
+  addFlavor(flavor: string) {
+    return this.db.database.ref('/config/flavors').push(flavor);
+  }
+  removeFlavor(key: string) {
+    return this.db.database.ref(`/config/flavors/${key}`).remove()
+  }
+  updateFlavor(key: string, name: string) {
+    return this.db.database.ref(`/config/flavors`).update({ [key]: name })
   }
 
+  addDrink(flavor: string) {
+    return this.db.database.ref('/config/drinks').push(flavor);
+  }
+  removeDrink(key: string) {
+    return this.db.database.ref(`/config/drinks/${key}`).remove()
+  }
+  updateDrink(key: string, name: string) {
+    return this.db.database.ref(`/config/drinks`).update({ [key]: name })
+  }
+
+  addLocation(flavor: string) {
+    return this.db.database.ref('/config/locations').push(flavor);
+  }
+  removeLocation(key: string) {
+    return this.db.database.ref(`/config/locations/${key}`).remove()
+  }
+  updateLocation(key: string, name: string) {
+    return this.db.database.ref(`/config/locations`).update({ [key]: name })
+  }
+
+  addBarista([key, displayName, photoURL]) {
+    return this.db.database.ref('/roles/barista').update({ [key]: { displayName, photoURL } })
+  }
+  removeBarista(key: string) {
+    return this.db.database.ref(`/roles/barista/${key}`).remove()
+  }
+  get orders(): Observable<Order[]> {
+    return this.db.list('/orders', {
+      query: {
+        orderByChild: 'status',
+        equalTo: 'ordered',
+      }
+    })
+  }
   get started(): Observable<Order[]> {
-    return this.db.list('/started')
-      .map(val => val.map(order => ({ ...order, $key: order.$key })));
+    return this.db.list('/orders', {
+      query: {
+        orderByChild: 'status',
+        equalTo: 'started',
+      }
+    })
   }
-
-  finishOrder(order: Order): Observable<any> {
-    return Observable.forkJoin(
-      this.removeOrder(order),
-      this.removeStarted(order),
-      this.db.object('/finished/' + order.key).set(order),
-      this.addSms(order.key, order.phone, `Get it while it's hot! Your coffee is ready!`));
+  startOrder({ key, uid, ...order }) {
+    return this.db.database.ref().update({
+      [`/orders/${key}/status`]: 'started',
+      [`/users/${uid}/orders/${key}/status`]: 'started'
+    });
   }
-  startOrder(order: Order): Observable<any> {
-    return Observable.forkJoin(
-      this.removeOrder(order),
-      this.db.object('/started/' + order.key).set(order));
-  }
-  private removeStarted(order: Order): Observable<void> {
-    return fromPromise(this.db.object('/started/' + order.key).remove());
-  }
-
-  private addSms(ref: string, to: string, body: string): firebase.Promise<any> {
-    return this.db.object('/sms/' + ref).set({ to, body });
+  finishOrder({ key, uid, ...order }) {
+    return this.db.database.ref().update({
+      [`/orders/${key}/status`]: 'finished',
+      [`/users/${uid}/orders/${key}/status`]: 'finished'
+    });
   }
 }

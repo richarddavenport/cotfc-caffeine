@@ -13,7 +13,7 @@ export class CcHttp {
   ) { }
 
   importOldOrders() {
-    return fromPromise(this.angularFireAuth.auth.currentUser.getToken())
+    return fromPromise(this.angularFireAuth.auth.currentUser.getIdToken())
       .switchMap(token => {
         const request = new Request({
           method: RequestMethod.Post,

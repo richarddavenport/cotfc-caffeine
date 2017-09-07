@@ -2,7 +2,16 @@
   <md-card-title>Order History</md-card-title>
   <md-card-content>
     <md-list>
+      <h3 md-subheader>Orders</h3>
       <md-list-item *ngFor="let order of orders">
+        <md-icon mdListIcon class="{{ order.icon }}"></md-icon>
+        <div mdLine>
+          <div> {{ order.createdAt }} </div>
+          <div> {{ order.drink }} </div>
+        </div>
+      </md-list-item>
+      <h3 md-subheader>Imported Orders</h3>
+      <md-list-item *ngFor="let order of importedOrders">
         <md-icon mdListIcon class="{{ order.icon }}"></md-icon>
         <p mdLine>{{ order.drink }}</p>
       </md-list-item>

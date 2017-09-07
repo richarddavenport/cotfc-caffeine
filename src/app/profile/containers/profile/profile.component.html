@@ -5,5 +5,5 @@
   <h2>{{profile.displayName}}</h2>
   <cc-profile-form [form]="profileForm$ | async" (updateForm)="onUpdateForm($event)"></cc-profile-form>
   <cc-import-orders *ngIf="hasPhoneNumber$ | async" (importOldOrders)="onImportOldOrders()" [importing]="importing"></cc-import-orders>
-  <cc-order-history [orders]="orders$ | async"></cc-order-history>
+  <cc-order-history [orders]="orders$ | async" [importedOrders]="importedOrders$ | async"></cc-order-history>
 </div>

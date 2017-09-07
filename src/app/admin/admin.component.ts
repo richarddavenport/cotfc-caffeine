@@ -1,54 +1,70 @@
-import { Component, ElementRef, Renderer, ViewChild } from '@angular/core';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { Component, ElementRef, OnInit, Renderer, ViewChild } from '@angular/core';
+import { FirebaseObjectObservable } from 'angularfire2/database';
+
+import { Database } from '../core/services/database';
+import { Config } from '../models/config';
 
 @Component({
   selector: 'cc-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent {
-  flavors: FirebaseListObservable<any>;
-  milks: FirebaseListObservable<any>;
-  @ViewChild('newmilk') newmilk: ElementRef;
+export class AdminComponent implements OnInit {
+  baristas$: FirebaseObjectObservable<any>;
+  users$: FirebaseObjectObservable<any>;
+  config$: FirebaseObjectObservable<Config>;
+  @ViewChild('newdrink') newdrink: ElementRef;
   @ViewChild('newflavor') newflavor: ElementRef;
+  @ViewChild('newlocation') newlocation: ElementRef;
 
-  constructor(private db: AngularFireDatabase,
-    private renderer: Renderer) {
-    this.flavors = db.list('/flavors');
-    this.milks = db.list('/milks');
+  constructor(
+    private database: Database,
+    private renderer: Renderer
+  ) { }
+
+  ngOnInit() {
+    this.config$ = this.database.config;
+    this.baristas$ = this.database.baristas;
+    this.users$ = this.database.users;
   }
 
-  addFlavor(newName: string) {
+  addFlavor(name: string) {
     this.renderer.setElementProperty(this.newflavor.nativeElement, 'value', null);
-    this.flavors.push(newName);
+    this.database.addFlavor(name);
+  }
+  updateFlavor(key: string, name: string) {
+    this.database.updateFlavor(key, name);
+  }
+  removeFlavor(key: string) {
+    this.database.removeFlavor(key);
   }
 
-  updateFlavor(key: string, newText: string) {
-    this.db.object('/flavors/' + key).set(newText);
+  addDrink(name: string) {
+    this.renderer.setElementProperty(this.newdrink.nativeElement, 'value', null);
+    this.database.addDrink(name);
+  }
+  updateDrink(key: string, name: string) {
+    this.database.updateDrink(key, name);
+  }
+  removeDrink(key: string) {
+    this.database.removeDrink(key);
   }
 
-  deleteFlavor(key: string) {
-    this.flavors.remove(key);
+  addLocation(name: string) {
+    this.renderer.setElementProperty(this.newlocation.nativeElement, 'value', null);
+    this.database.addLocation(name);
+  }
+  updateLocation(key: string, name: string) {
+    this.database.updateLocation(key, name);
+  }
+  removeLocation(key: string) {
+    this.database.removeLocation(key);
   }
 
-  addMilk(newName: string) {
-    this.renderer.setElementProperty(this.newmilk.nativeElement, 'value', null);
-    this.milks.push(newName);
+  onChangeBarista(user) {
+    this.database.addBarista(user.value.split('|'));
   }
-
-  updateMilk(key: string, newText: string) {
-    this.db.object('/milks/' + key).set(newText);
-  }
-
-  deleteMilk(key: string) {
-    this.milks.remove(key);
-  }
-
-  flavorTrackBy(index: number, obj: any): any {
-    return index;
-  }
-
-  milkTrackBy(index: number, obj: any): any {
-    return index;
+  removeBarista(key: string) {
+    this.database.removeBarista(key);
   }
 }

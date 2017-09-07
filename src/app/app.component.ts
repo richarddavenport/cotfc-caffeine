@@ -32,8 +32,5 @@ export class AppComponent implements OnInit {
       .filter(roles => Array.isArray(roles))
       .map(roles => roles.includes('barista'));
 
-    this.admin$ = this.authService.getRoles()
-      .filter(roles => Array.isArray(roles))
-      .map(roles => roles.includes('admin'));
   }
 }

@@ -9,16 +9,16 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./barista.component.scss']
 })
 export class BaristaComponent implements OnInit {
-  orders: Observable<Order[]>;
-  started: Observable<Order[]>;
+  orders$: Observable<Order[]>;
+  started$: Observable<Order[]>;
 
   constructor(
     private db: Database,
   ) { }
 
   ngOnInit() {
-    this.orders = this.db.ordered;
-    this.started = this.db.started;
+    this.orders$ = this.db.orders;
+    this.started$ = this.db.started;
   }
 
   onStarted(order: Order) {

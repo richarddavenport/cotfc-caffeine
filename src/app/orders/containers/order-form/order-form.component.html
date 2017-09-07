@@ -10,8 +10,8 @@
       <div formGroupName="flavors" fxLayout="column" fxLayout.gt-xs="row">
         <div *ngFor="let flavor of config.flavors | keyValue" fxFlex>
           <label>
-        <md-checkbox class="flavor" [formControlName]="flavor.value">{{flavor.value}}</md-checkbox>
-      </label>
+            <md-checkbox class="flavor" [formControlName]="flavor.value">{{flavor.value}}</md-checkbox>
+          </label>
         </div>
       </div>
       <hr>
@@ -20,7 +20,13 @@
           {{drink.value}}
         </md-radio-button>
       </md-radio-group>
-      <hr>
+      <div class="select">
+        <md-select mdInput placeholder="Location" (change)="onChangeLocation($event)">
+          <md-option *ngFor="let location of config.locations | keyValue" [value]="location.value">
+            {{ location.value }}
+          </md-option>
+        </md-select>
+      </div>
       <md-input-container class="full-width">
         <textarea mdInput placeholder="Special Instructions:" formControlName="notes"></textarea>
       </md-input-container>

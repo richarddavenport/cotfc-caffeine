@@ -1,38 +1,46 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start">
-  <div fxLayout="row" fxLayoutWrap fxLayoutAlign="center" fxFlex.sm="100">
-    <h1 fxFlex="100">Ordered: {{(orders | async)?.length}}</h1>
-    <md-card *ngFor="let order of orders | async" class="order-card">
-      <md-card-title>
-        {{order.name}}
-      </md-card-title>
+  <div>
+    <h1>Ordered: {{(orders$ | async)?.length}}</h1>
+    <md-card *ngFor="let order of orders$ | async" class="order-card">
+      <md-card-header>
+        <div md-card-avatar>
+          <md-icon md-list-icon><img src="{{order.photoURL}}" md-card-avatar></md-icon>
+        </div>
+        <md-card-title>{{order.displayName}}</md-card-title>
+      </md-card-header>
       <md-card-content>
-        {{order.temp}}<br>
-        <span *ngIf="order.flavors">{{order.flavors}}<br></span>
-        {{order.milk}}<br>
-        <span *ngIf="order.notes">{{order.notes}}</span>
+        <div>{{order.temperature}}</div>
+        <div *ngIf="order.flavors">{{order.flavors.join(', ')}}</div>
+        <div>{{order.drink}}</div>
+        <div *ngIf="order.notes">
+          <hr> {{order.notes}}
+        </div>
       </md-card-content>
       <md-card-actions>
         <button md-button (click)="onStarted(order)">START</button>
-        <button md-button (click)="onFinished(order)">FINISH</button>
       </md-card-actions>
     </md-card>
   </div>
-  <div fxLayout="row" fxLayoutWrap fxLayoutAlign="center" fxFlex.sm="100">
-    <h1 fxFlex="100">Started: {{(started | async)?.length}}</h1>
-    <md-card *ngFor="let order of started | async" class="order-card">
-      <md-card-title>
-        {{order.name}}
-      </md-card-title>
+  <div>
+    <h1>Started: {{(started$ | async)?.length}}</h1>
+    <md-card *ngFor="let order of started$ | async" class="order-card">
+      <md-card-header>
+        <div md-card-avatar>
+          <md-icon md-list-icon><img src="{{order.photoURL}}" md-card-avatar></md-icon>
+        </div>
+        <md-card-title>{{order.displayName}}</md-card-title>
+      </md-card-header>
       <md-card-content>
-        {{order.temp}}<br>
-        <span *ngIf="order.flavors">{{order.flavors}}<br></span>
-        {{order.milk}}<br>
-        <span *ngIf="order.notes">{{order.notes}}</span>
+        <div>{{order.temperature}}</div>
+        <div *ngIf="order.flavors">{{order.flavors.join(', ')}}</div>
+        <div>{{order.drink}}</div>
+        <div *ngIf="order.notes">
+          <hr> {{order.notes}}
+        </div>
       </md-card-content>
       <md-card-actions>
         <button md-button (click)="onFinished(order)">FINISH</button>
       </md-card-actions>
     </md-card>
-    <hr>
   </div>
 </div>

@@ -1,21 +1,22 @@
-<div class="container" fxLayout.gt-xs="row" fxLayout="column" fxLayoutAlign="space-around start" fxLayoutAlign.xs="center center">
+<div *ngIf="config$ | async as config" class="container" fxLayout.gt-xs="row" fxLayout="column" fxLayoutWrap="wrap" fxLayoutAlign="space-around start"
+  fxLayoutAlign.xs="center center">
   <md-card>
     <md-card-title>Flavors</md-card-title>
     <md-card-content>
       <md-list>
         <md-list-item fxFlexlayout>
           <md-input-container fxFlex>
-            <input md-input #newflavor placeholder="Add New Flavor">
+            <input mdInput #newflavor placeholder="Add New Flavor">
           </md-input-container>
           <a md-mini-fab color="primary" (click)="addFlavor(newflavor.value)">
             <i class="material-icons">add</i>
           </a>
         </md-list-item>
-        <md-list-item *ngFor="let flavor of flavors | async; let i=index;trackBy:flavorTrackBy" fxFlexlayout>
+        <md-list-item *ngFor="let flavor of config.flavors | keyValue" fxFlexlayout>
           <md-input-container fxFlex>
-            <input md-input #flavortext [value]="flavor.$value" (keyup)="updateFlavor(flavor.$key, flavortext.value)">
+            <input mdInput #flavorinput [value]="flavor.value" (blur)="updateFlavor(flavor.key, flavorinput.value)">
           </md-input-container>
-          <a md-mini-fab color="warn" (click)="deleteFlavor(flavor.$key)">
+          <a md-mini-fab color="warn" (click)="removeFlavor(flavor.key)">
             <i class="material-icons">clear</i>
           </a>
         </md-list-item>
@@ -23,22 +24,66 @@
     </md-card-content>
   </md-card>
   <md-card>
-    <md-card-title>Milks</md-card-title>
+    <md-card-title>Drinks</md-card-title>
     <md-card-content>
       <md-list>
         <md-list-item fxFlexlayout>
           <md-input-container fxFlex>
-            <input md-input #newmilk placeholder="Add New Milk">
+            <input mdInput #newdrink placeholder="Add New Drink">
           </md-input-container>
-          <a md-mini-fab color="primary" (click)="addMilk(newmilk.value)">
+          <a md-mini-fab color="primary" (click)="addDrink(newdrink.value)">
             <i class="material-icons">add</i>
           </a>
         </md-list-item>
-        <md-list-item *ngFor="let milk of milks | async; let i=index;trackBy:milkTrackBy" fxFlexlayout>
+        <md-list-item *ngFor="let drink of config.drinks | keyValue" fxFlexlayout>
           <md-input-container fxFlex>
-            <input md-input #milktext [value]="milk.$value" (keyup)="updateMilk(milk.$key, milktext.value)">
+            <input mdInput #drinkinput [value]="drink.value" (blur)="updateDrink(drink.key, drinkinput.value)">
           </md-input-container>
-          <a md-mini-fab color="warn" (click)="deleteMilk(milk.$key)">
+          <a md-mini-fab color="warn" (click)="removeDrink(drink.key)">
+            <i class="material-icons">clear</i>
+          </a>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+  </md-card>
+  <md-card>
+    <md-card-content>
+      <md-list>
+        <h3 md-subheader>Baristas</h3>
+        <md-list-item>
+          <md-select (change)="onChangeBarista($event)" placeholder="Add Barista">
+            <md-option *ngFor="let user of users$ | async | keyValue" [value]="user.key + '|' + user.value.displayName + '|' + user.value.photoURL">
+              {{ user.value?.displayName }}
+            </md-option>
+          </md-select>
+        </md-list-item>
+        <md-list-item *ngFor="let barista of baristas$ | async | keyValue">
+          <md-icon md-list-icon><img src="{{barista.value?.photoURL}}" md-card-avatar></md-icon>
+          <h4 md-line> {{barista.value?.displayName}} </h4>
+          <a md-mini-fab color="warn" (click)="removeBarista(barista.key)">
+            <i class="material-icons">clear</i>
+          </a>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+  </md-card>
+  <md-card>
+    <md-card-title>Locations</md-card-title>
+    <md-card-content>
+      <md-list>
+        <md-list-item fxFlexlayout>
+          <md-input-container fxFlex>
+            <input mdInput #newlocation placeholder="Add New Location">
+          </md-input-container>
+          <a md-mini-fab color="primary" (click)="addLocation(newlocation.value)">
+            <i class="material-icons">add</i>
+          </a>
+        </md-list-item>
+        <md-list-item *ngFor="let location of config.locations | keyValue" fxFlexlayout>
+          <md-input-container fxFlex>
+            <input mdInput #locationinput [value]="location.value" (blur)="updateLocation(location.key, locationinput.value)">
+          </md-input-container>
+          <a md-mini-fab color="warn" (click)="removeLocation(location.key)">
             <i class="material-icons">clear</i>
           </a>
         </md-list-item>

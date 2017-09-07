@@ -1,15 +1,18 @@
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  MdAutocompleteModule,
   MdButtonModule,
   MdCardModule,
   MdCheckboxModule,
   MdInputModule,
   MdListModule,
   MdRadioModule,
+  MdSelectModule,
   MdSidenavModule,
+  MdSnackBarModule,
   MdToolbarModule,
 } from '@angular/material';
 
@@ -24,8 +27,11 @@ const MdModules = [
   MdInputModule,
   MdListModule,
   MdRadioModule,
+  MdSelectModule,
   MdSidenavModule,
   MdToolbarModule,
+  MdAutocompleteModule,
+  MdSnackBarModule,
 ]
 
 @NgModule({

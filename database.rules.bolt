@@ -1,8 +1,19 @@
 path /config {
   read() { isAuthenticated() }
+  write() { isBarista() }
+}
+
+path /roles {
+  read() { isBarista() }
+  write() { isBarista() }
 }
 
 // Users
+path /users {
+  read() { isBarista() }
+  write() { isBarista() }
+}
+
 path /users/{uid} {
   /profile is Profile;
   /profile/phoneNumber is PhoneNumber;
@@ -13,10 +24,14 @@ path /users/{uid} {
 }
 
 // Orders
-path /orders/{orderId}/{uid} {
-  write() { isCurrentUser(uid) }
-  /order is Order;
-  /profile is Profile;
+path /orders {
+  read() { isBarista() }
+  write() { isBarista() }
+  index() { [ "status" ] }
+}
+
+path /orders/{orderId} {
+  write() { isOrderOwner() }
 }
 
 type Orders extends Order[] {
@@ -52,3 +67,5 @@ type Temperature extends String {
 
 isAuthenticated() { auth != null }
 isCurrentUser(uid) { auth != null && auth.uid == uid }
+isOrderOwner() { auth != null && auth.uid == newData.child('uid').val() && root['roles/user/' + auth.uid] != null }
+isBarista() { auth != null && root['roles/barista/' + auth.uid] != null }

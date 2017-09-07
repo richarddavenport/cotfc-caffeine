@@ -36,32 +36,34 @@ app.post('/importoldorders', (req, res) => {
     oldOrdersRef.once('value').then(snap => {
       const snapVal = snap.val();
       if (snapVal == null) {
-        res.status(200).json({
-          phoneNumber,
-          ordersToImport: null,
-          num: 0
-        })
-        return;
-      }
-      const ordersToImport = Object.keys(snapVal).reduce((acc, key) => {
-        const order = snapVal[key];
-        acc[key] = {
-          drink: order.milk,
-          temperature: order.temp
-        };
-        if (order.flavors) {
-          acc[key].flavors = order.flavors;
-        }
-        return acc;
-      }, {});
-
-      usersImportedOrdersRef.set(ordersToImport).then(() => {
-        res.status(200).json({
-          phoneNumber,
-          ordersToImport,
-          num: Object.keys(ordersToImport).length
+        usersImportedOrdersRef.set({}).then(() => {
+          res.status(200).json({
+            phoneNumber,
+            ordersToImport: null,
+            num: 0
+          });
         });
-      });
+      } else {
+        const ordersToImport = Object.keys(snapVal).reduce((acc, key) => {
+          const order = snapVal[key];
+          acc[key] = {
+            drink: order.milk,
+            temperature: order.temp
+          };
+          if (order.flavors) {
+            acc[key].flavors = order.flavors;
+          }
+          return acc;
+        }, {});
+
+        usersImportedOrdersRef.set(ordersToImport).then(() => {
+          res.status(200).json({
+            phoneNumber,
+            ordersToImport,
+            num: Object.keys(ordersToImport).length
+          });
+        });
+      }
     });
   });
 });

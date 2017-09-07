@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MdSnackBar } from '@angular/material';
 import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 
 import { Database } from '../../../core/services/database';
@@ -16,35 +18,38 @@ export class OrderFormComponent implements OnInit {
   order: FormGroup;
   config$: Observable<Config>;
   flavors: { [key: string]: boolean };
-  drinks: string[];
-  temperatures: string[];
 
   constructor(
     private formBuilder: FormBuilder,
     private database: Database,
-    private auth: AngularFireAuth
+    private auth: AngularFireAuth,
+    private snackBar: MdSnackBar,
   ) { }
 
   ngOnInit() {
-    this.config$ = this.database.orderConfig.map((config: Config) => {
+    this.config$ = this.database.config.map((config: Config) => {
       this.flavors = Object.keys(config.flavors).reduce((acc, cur) => ({
         ...acc,
         [config.flavors[cur]]: false,
       }), {});
-      this.drinks = Object.keys(config.drinks).map(drink => config.drinks[drink]);
-      this.temperatures = Object.keys(config.temperatures).map(temp => config.temperatures[temp]);
       this.order = this.formBuilder.group({
         flavors: this.formBuilder.group(this.flavors),
         drink: '',
         notes: '',
         temperature: '',
+        location: '',
       });
       return config;
     });
   }
 
+  onChangeLocation({ value }) {
+    this.order.controls['location'].setValue(value);
+  }
+
   submit() {
     const order: Order = {
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
       ...this.order.value,
       flavors: Object.keys(this.order.value.flavors).reduce((acc, cur) => {
         if (this.order.value.flavors[cur]) {
@@ -58,10 +63,10 @@ export class OrderFormComponent implements OnInit {
       }, [] as string[])
     };
     this.database.createOrder(order).subscribe(foo => {
-      console.log(foo);
+      this.snackBar.open('Order Received!', 'Hooray!', { duration: 3000 });
+      this.order.reset();
     }, error => {
-      console.log(error);
+      this.snackBar.open('Oh Snap!', 'Error!', { duration: 3000 })
     })
-    this.order.reset();
   }
 }

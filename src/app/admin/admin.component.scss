@@ -1,6 +1,13 @@
 .container {
   margin-top: 50px;
 }
+
 md-card {
   margin: 15px;
+  min-width: 285px;
+}
+
+md-list-item md-icon[md-list-icon] {
+  width: 40px;
+  height: 40px;
 }

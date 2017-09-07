@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, Input } from '@angular/core';
+
+import { Order } from '../../../orders/models/order';
 
 @Component({
   selector: 'cc-order-history',
@@ -7,5 +8,6 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./order-history.component.scss']
 })
 export class OrderHistoryComponent {
-  @Input() orders: any;
+  @Input() orders: any[];
+  @Input() importedOrders: any;
 }
