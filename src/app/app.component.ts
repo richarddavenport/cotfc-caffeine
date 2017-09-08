@@ -1,3 +1,4 @@
+import { MessagingService } from './core/services/messaging';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AngularFireDatabase } from 'angularfire2/database';

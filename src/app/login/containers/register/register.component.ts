@@ -19,7 +19,7 @@ export class RegisterComponent {
     this.authService.loginWithProvider(provider)
   }
 
-  onRegister(email, password) {
+  onRegister({ email, password }) {
     this.authService.createUserWithEmail(email, password);
   }
 }
