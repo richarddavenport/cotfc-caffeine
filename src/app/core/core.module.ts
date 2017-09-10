@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import {
-  MdButtonModule,
-  MdCardModule,
-  MdInputModule,
-  MdListModule,
-  MdSidenavModule,
-  MdSnackBarModule,
-  MdToolbarModule,
+    MdButtonModule,
+    MdCardModule,
+    MdInputModule,
+    MdListModule,
+    MdSidenavModule,
+    MdSnackBarModule,
+    MdToolbarModule,
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 
@@ -53,6 +53,7 @@ const MdModules = [
     LoginGuard,
     LoggedInGuard,
     ProfileGuard,
+    MessagingService,
   ],
   exports: [
     ...MdModules,

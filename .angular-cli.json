@@ -19,7 +19,8 @@
       "favicon.ico",
       "manifest.json",
       "mstile-150x150.png",
-      "safari-pinned-tab.svg"
+      "safari-pinned-tab.svg",
+      "firebase-messaging-sw.js"
     ],
     "index": "index.html",
     "main": "main.ts",
@@ -33,7 +34,8 @@
       "../node_modules/normalize.css/normalize.css",
       "styles.scss"
     ],
-    "scripts": [],
+    "scripts": [
+    ],
     "environmentSource": "environments/environment.ts",
     "environments": {
       "dev": "environments/environment.ts",
