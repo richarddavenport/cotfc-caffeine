@@ -9,5 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class ProfileFormComponent {
   @Input() form: FormGroup;
   @Output() updateForm = new EventEmitter();
+  @Output() pushChange = new EventEmitter();
+  @Output() textChange = new EventEmitter();
   mask = ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 }

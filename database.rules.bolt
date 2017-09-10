@@ -16,8 +16,6 @@ path /users {
 
 path /users/{uid} {
   /profile is Profile;
-  /profile/phoneNumber is PhoneNumber;
-  /profile/updateProfile is UpdateProfile;
   /roles is UserRoles;
   /importedOrders is Orders;
   /orders is Orders;
@@ -47,6 +45,7 @@ type Order {
 
 type Profile {
   read() { isCurrentUser(uid) }
+  write() { isCurrentUser(uid) }
 }
 
 type UserRoles {

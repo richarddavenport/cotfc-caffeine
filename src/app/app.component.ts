@@ -1,4 +1,3 @@
-import { MessagingService } from './core/services/messaging';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -21,8 +20,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private store: Store<AppState>,
-    private angularFireDatabase: AngularFireDatabase,
   ) { }
 
   ngOnInit() {
@@ -32,6 +29,5 @@ export class AppComponent implements OnInit {
     this.barista$ = this.authService.getRoles()
       .filter(roles => Array.isArray(roles))
       .map(roles => roles.includes('barista'));
-
   }
 }

@@ -2,7 +2,7 @@
   <md-card>
     <md-card-title>Profile Info</md-card-title>
     <md-card-subtitle>
-      If we're missing you're phone number we won't be able to text you. Without your number, you won't be able to order.
+      If we're missing you're phone number we won't be able to text you.
     </md-card-subtitle>
     <md-card-content>
       <section>
@@ -15,10 +15,19 @@
             Please enter a phone number
           </md-error>
         </md-input-container>
+        <button md-button (click)="updateForm.emit(form.value)" [disabled]="form.controls['phone'].invalid">Save Number</button>
+
+        <section>
+          <md-slide-toggle (change)="pushChange.emit($event)" [checked]="form.controls['pushNotifications'].value">
+            Push Notifications
+          </md-slide-toggle>
+        </section>
+        <section>
+          <md-slide-toggle (change)="textChange.emit($event)" [checked]="form.controls['receiveTexts'].value">
+            Text Messages
+          </md-slide-toggle>
+        </section>
       </section>
     </md-card-content>
-    <md-card-actions>
-      <button md-button (click)="updateForm.emit(form.value)" [disabled]="form.controls['phone'].invalid">Save</button>
-    </md-card-actions>
   </md-card>
 </form>

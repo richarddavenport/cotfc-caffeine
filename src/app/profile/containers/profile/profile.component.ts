@@ -1,5 +1,4 @@
-import { Database } from '../../../core/services/database';
-import { CcHttp } from '../../../core/services/http';
+import { MessagingService } from '../../../core/services/messaging';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MdSnackBar } from '@angular/material';
@@ -7,6 +6,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../../../core/services/auth.service';
+import { Database } from '../../../core/services/database';
+import { CcHttp } from '../../../core/services/http';
 
 @Component({
   selector: 'cc-profile',
@@ -29,6 +30,7 @@ export class ProfileComponent implements OnInit {
     private angularFireAuth: AngularFireAuth,
     private ccHttp: CcHttp,
     private database: Database,
+    private messaging: MessagingService,
   ) { }
 
   ngOnInit() {
@@ -41,7 +43,9 @@ export class ProfileComponent implements OnInit {
     this.profileForm$ = this.authService.getProfile()
       .map(profile => this.formBuilder.group({
         phone: [profile.phoneNumber, Validators.compose([
-          Validators.required, Validators.pattern(/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/g)])]
+          Validators.required, Validators.pattern(/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/g)])],
+        pushNotifications: profile.pushNotifications,
+        receiveTexts: profile.receiveTexts
       }));
 
     this.hasPhoneNumber$ = this.authService.getProfile()
@@ -55,6 +59,15 @@ export class ProfileComponent implements OnInit {
     return this.authService.updatePhoneNumber(phone.replace(/\D/g, ''))
       .subscribe(response => this.snackBar.open('Saved!', 'Hooray!', { duration: 3000 }),
       error => this.snackBar.open('Whoops! Try again...', 'Bummer.', { duration: 3000 }))
+  }
+
+  onPushChange({ checked }) {
+    this.messaging.requestPermission()
+      .then(() => this.messaging.setPushNotificationStatus(checked));
+  }
+
+  onTextChange({ checked }) {
+    this.database.setTextMessageStatus(checked);
   }
 
   onImportOldOrders() {

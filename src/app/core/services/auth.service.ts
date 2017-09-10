@@ -53,21 +53,21 @@ export class AuthService {
       );
   }
 
-  loginWithProvider(provider: firebase.auth.AuthProvider): void {
-    this.angularFireAuth.auth
+  loginWithProvider(provider: firebase.auth.AuthProvider) {
+    return this.angularFireAuth.auth
       .signInWithPopup(provider)
       .then(() => this.store.dispatch(go('order')))
       .catch(error => alert(error));
   }
 
   loginWithEmail(email: string, password: string) {
-    this.angularFireAuth.auth
+    return this.angularFireAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(() => this.store.dispatch(go('order')));
   }
 
   createUserWithEmail(email: string, password: string) {
-    this.angularFireAuth.auth
+    return this.angularFireAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(() => this.store.dispatch(go('order')));
   }

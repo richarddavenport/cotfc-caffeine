@@ -3,7 +3,7 @@
 </div>
 <div class="profile" *ngIf="(profile$ | async) as profile">
   <h2>{{profile.displayName}}</h2>
-  <cc-profile-form [form]="profileForm$ | async" (updateForm)="onUpdateForm($event)"></cc-profile-form>
+  <cc-profile-form [form]="profileForm$ | async" (updateForm)="onUpdateForm($event)" (pushChange)="onPushChange($event)" (textChange)="onTextChange($event)"></cc-profile-form>
   <cc-import-orders *ngIf="hasPhoneNumber$ | async" (importOldOrders)="onImportOldOrders()" [importing]="importing"></cc-import-orders>
   <cc-order-history [orders]="orders$ | async" [importedOrders]="importedOrders$ | async"></cc-order-history>
 </div>

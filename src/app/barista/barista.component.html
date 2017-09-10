@@ -15,9 +15,15 @@
         <div *ngIf="order.notes">
           <hr> {{order.notes}}
         </div>
+        <section>
+          <md-input-container style="width: 100%;">
+            <textarea mdInput placeholder="Message" #orderedMessage></textarea>
+          </md-input-container>
+        </section>
       </md-card-content>
       <md-card-actions>
         <button md-button (click)="onStarted(order)">START</button>
+        <button md-button (click)="onSendMessage(orderedMessage.value, order.key)">SEND MESSAGE</button>
       </md-card-actions>
     </md-card>
   </div>
@@ -37,9 +43,15 @@
         <div *ngIf="order.notes">
           <hr> {{order.notes}}
         </div>
+        <section>
+          <md-input-container style="width: 100%;">
+            <textarea mdInput placeholder="Message" #startedMessage></textarea>
+          </md-input-container>
+        </section>
       </md-card-content>
       <md-card-actions>
         <button md-button (click)="onFinished(order)">FINISH</button>
+        <button md-button (click)="onSendMessage(startedMessage.value, order.key)">SEND MESSAGE</button>
       </md-card-actions>
     </md-card>
   </div>

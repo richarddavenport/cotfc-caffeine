@@ -27,4 +27,8 @@ export class BaristaComponent implements OnInit {
   onFinished(order: Order) {
     this.db.finishOrder(order);
   }
+
+  onSendMessage(message, key) {
+    this.db.sendMessage(message, key);
+  }
 }

@@ -46,3 +46,4 @@ firebase.config.ts
 firebase.json
 serviceAccountKey*
 firebase-debug*
+functions/.runtimeconfig.json

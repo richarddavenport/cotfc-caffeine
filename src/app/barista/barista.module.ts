@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MdButtonModule, MdCardModule } from '@angular/material';
+import { MdButtonModule, MdCardModule, MdInputModule } from '@angular/material';
 
 import { BaristaComponent } from './barista.component';
 import { BaristaRoutingModule } from './barista.routing.module';
@@ -13,6 +13,7 @@ import { BaristaRoutingModule } from './barista.routing.module';
     MdCardModule,
     FlexLayoutModule,
     MdButtonModule,
+    MdInputModule,
   ],
   declarations: [BaristaComponent],
 })

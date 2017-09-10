@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve -o",
+    "start": "npm-run-all -p -r 'build:dev -- --watch' 'firebase -- serve'",
     "start:functions": "npm run firebase -- serve --only functions",
     "build": "ng build",
     "test": "ng test",
@@ -22,7 +22,8 @@
     "deploy:functions:sms": "firebase deploy --only functions:sms",
     "deploy:hosting": "firebase deploy --only hosting",
     "deploy:storage": "firebase deploy --only storage",
-    "hmr": "npm run start -- --hmr -e=hmr"
+    "hmr": "npm run start -- --hmr -e=hmr",
+    "webpack-dev-server": "webpack-dev-server"
   },
   "private": true,
   "repository": {
@@ -31,14 +32,14 @@
   },
   "dependencies": {
     "@angular/animations": "4.3.0",
-    "@angular/cdk": "2.0.0-beta.8",
+    "@angular/cdk": "^2.0.0-beta.10",
     "@angular/common": "4.3.0",
     "@angular/compiler": "4.3.0",
     "@angular/core": "4.3.0",
     "@angular/flex-layout": "2.0.0-beta.8",
     "@angular/forms": "4.3.0",
     "@angular/http": "4.3.0",
-    "@angular/material": "2.0.0-beta.8",
+    "@angular/material": "^2.0.0-beta.10",
     "@angular/platform-browser": "4.3.0",
     "@angular/platform-browser-dynamic": "4.3.0",
     "@angular/router": "4.3.0",
@@ -77,10 +78,12 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "ngrx-store-freeze": "^0.1.9",
+    "npm-run-all": "^4.1.1",
     "protractor": "~5.1.2",
     "sass-loader": "^6.0.6",
     "ts-node": "3.2.0",
     "tslint": "5.5.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.3.4",
+    "webpack-dev-server": "^2.7.1"
   }
 }

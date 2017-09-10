@@ -1,17 +1,12 @@
-import { AuthService } from './auth.service';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
-import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 import * as moment from 'moment';
+import { Observable } from 'rxjs/Observable';
 
 import { Config } from '../../models/config';
 import { Order } from '../../orders/models/order';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class Database {
@@ -92,6 +87,16 @@ export class Database {
         [`/users/${order.uid}/orders/${order.key}`]: order
       }))
       .switchMap(orderData => this.db.database.ref().update(orderData));
+  }
+
+  setTextMessageStatus(receiveTexts) {
+    return this.authService.authState
+      .map(user => user.uid).first()
+      .subscribe(uid => this.db.object(`users/${uid}/profile`).update({ receiveTexts }));
+  }
+
+  sendMessage(message, key) {
+    return this.db.object(`orders/${key}/message`).update({ body: message });
   }
 
   addFlavor(flavor: string) {
