@@ -9,4 +9,5 @@ export const environment = {
   production: false,
   hmr: false,
   firebase: firebaseDev,
+  signInSuccessUrl: 'http://localhost:5000'
 };

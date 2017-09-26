@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "cotfc-caffeine-dev"
+    "default": "cotfc-caffeine",
+    "dev": "cotfc-caffeine-dev"
   }
 }
